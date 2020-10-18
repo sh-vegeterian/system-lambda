@@ -113,8 +113,9 @@ void execute_code_that_manipulates_system_properties(
 
 Command-line applications usually write to the console. If you write such
 applications you need to test the output of these applications. The methods
-`tapSystemErr`, `tapSystemErrNormalized`, `tapSystemOut` and
-`tapSystemOutNormalized` allow you to tap the text that is written to
+`tapSystemErr`, `tapSystemErrNormalized`, `tapSystemOut`,
+`tapSystemOutNormalized`, `tapSystemErrAndOut` and
+`tapSystemErrAndOutNormalized` allow you to tap the text that is written to
 `System.err`/`System.out`. The methods with the suffix `Normalized` normalize
 line breaks to `\n` so that you can run tests with the same assertions on
 different operating systems.
@@ -156,6 +157,26 @@ void application_writes_mutliple_lines_to_System_out(
     System.out.println("second line");
   });
   assertEquals("first line\nsecond line\n", text);
+}
+
+@Test
+void application_writes_text_to_System_err_and_out(
+) throws Exception {
+  String text = tapSystemOut(() -> {
+    System.err.print("text from err");
+    System.out.print("text from out");
+  });
+  assertEquals("text from errtext from out", text);
+}
+
+@Test
+void application_writes_mutliple_lines_to_System_err_and_out(
+) throws Exception {
+  String text = tapSystemOutNormalized(() -> {
+    System.err.println("text from err");
+    System.out.println("text from out");
+  });
+  assertEquals("text from err\ntext from out\n", text);
 }
 ```
 
